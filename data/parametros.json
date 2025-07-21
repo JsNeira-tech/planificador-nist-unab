@@ -1,0 +1,27 @@
+{
+    "scoring": {
+        "priorityThresholds": { "critical": 0.8, "high": 0.6, "medium": 0.0 },
+        "subcategoryScoring": { "baseScore": 0.5, "mandatoryBonus": 0.4, "priorityAlignmentBonus": 0.3, "sectorPriorityBonus": 0.2, "maxScore": 1.0 },
+        "gapFactors": { "gap1": 0.05, "gap2": 0.1, "gap3Plus": 0.2 }
+    },
+    "timeline": { "baseMonths": 3, "phaseStartFactor": 0.7, "outsourcingSpeedupFactor": 0.8, "complexityWeights": { "basic": 0.8, "intermediate": 1.0, "advanced": 1.4 } },
+    "profileCalculation": {
+        "targetProfile": {
+            "employeeBases": { "1-10": {"GOVERN": 2, "IDENTIFY": 2, "PROTECT": 2, "DETECT": 2, "RESPOND": 2, "RECOVER": 2}, "11-25": {"GOVERN": 3, "IDENTIFY": 3, "PROTECT": 3, "DETECT": 3, "RESPOND": 3, "RECOVER": 3}, "26-50": {"GOVERN": 4, "IDENTIFY": 4, "PROTECT": 4, "DETECT": 4, "RESPOND": 4, "RECOVER": 4}, "51+": {"GOVERN": 4, "IDENTIFY": 4, "PROTECT": 4, "DETECT": 4, "RESPOND": 4, "RECOVER": 4} },
+            "governancePriorityBonus": 1,
+            "mandatorySubcategoryBonuses": { "retail": {"functions": ["PROTECT"], "threshold": 4, "bonus": 1}, "tech": {"functions": ["GOVERN", "IDENTIFY"], "threshold": 5, "bonus": 1}, "manufacturing": {"functions": ["IDENTIFY", "DETECT", "RECOVER"], "threshold": 4, "bonus": 1}, "services": {"functions": ["GOVERN"], "threshold": 4, "bonus": 1} },
+            "complexFunctionPenalty": -1,
+            "complexFunctions": ["DETECT", "RESPOND", "RECOVER"]
+        }
+    },
+    "ui": { "progressSteps": 5, "progressPercentPerStep": 20, "maxSecurityConcerns": 3, "maxSubcategoriesPerPhase": 3, "minSubcategoriesPerPhase": 2, "maxPhases": 6 },
+    "riskCalculation": {
+        "riskReductionFormula": { "basePercentage": 20, "gapMultiplier": 80, "minReduction": 35, "maxReduction": 85 },
+        "complianceThresholds": { "high": 0.8, "mediumHigh": 0.6, "medium": 0.4, "basic": 0.0 }
+    },
+    "sectorPriorityThreshold": 0.7,
+    "validation": { "step1RequiredFields": ["name", "sector", "employees", "revenue"], "step2RequiredFields": ["cybersecurityOwner", "riskIntegration"], "step2MinDataTypes": 1, "step3MinPriorities": 1, "step4RequiredFields": ["timeline", "technicalCapacity", "staffAvailability", "outsourcingWillingness"] },
+    "subcategorySelection": { "maxSubcategoriesPerFunction": 3, "targetLevelMapping": { "basic": 2, "intermediate": 3, "advanced": 4 } },
+    "phaseConstruction": { "phase1Function": "GOVERN", "maxAdditionalPhases": 5, "sortByGap": true, "onlyPositiveGaps": true },
+    "export": { "fileNamePrefix": "plan-nist-", "dateFormat": "ISO", "includeMetadata": true }
+}

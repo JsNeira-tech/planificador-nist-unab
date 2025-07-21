@@ -1,0 +1,84 @@
+{
+    "nistSubcategories": {
+        "GV.OC": { "name": "Contexto Organizacional", "activities": { "basic": "Definir el contexto de ciberseguridad de la organización", "intermediate": "Revisar y actualizar el contexto organizacional anualmente", "advanced": "Integrar contexto de ciberseguridad en planificación estratégica" }, "implementationComplexity": "intermediate" },
+        "GV.RM": { "name": "Estrategia de Gestión de Riesgos", "activities": { "basic": "Establecer apetito de riesgo básico documentado", "intermediate": "Desarrollar metodología formal de evaluación de riesgos", "advanced": "Integrar gestión de riesgos de ciberseguridad con riesgos empresariales" }, "implementationComplexity": "advanced" },
+        "ID.AM-01": { "name": "Inventario de Activos Físicos", "activities": { "basic": "Lista básica de computadores, servidores y dispositivos de red", "intermediate": "Inventario automatizado con herramientas de discovery", "advanced": "CMDB completo con propietarios y criticidad" }, "implementationComplexity": "basic" },
+        "ID.AM-02": { "name": "Inventario de Activos de Software", "activities": { "basic": "Lista de software crítico y licencias", "intermediate": "Inventario automatizado de software instalado", "advanced": "Gestión completa de vulnerabilidades de software" }, "implementationComplexity": "intermediate" },
+        "PR.AA-01": { "name": "Gestión de Identidades", "activities": { "basic": "Lista de usuarios con accesos documentados", "intermediate": "Active Directory o sistema centralizado de identidades", "advanced": "Single Sign-On (SSO) con autenticación multifactor" }, "implementationComplexity": "intermediate" },
+        "PR.AA-05": { "name": "Principio de Menor Privilegio", "activities": { "basic": "Configurar permisos básicos por rol en carpetas compartidas", "intermediate": "Implementar control de acceso basado en roles (RBAC)", "advanced": "Control de acceso dinámico con revisión automática" }, "implementationComplexity": "intermediate" },
+        "PR.DS-01": { "name": "Protección de Datos en Reposo", "activities": { "basic": "Cifrado de discos duros en equipos críticos", "intermediate": "Cifrado de bases de datos y archivos sensibles", "advanced": "Gestión centralizada de claves de cifrado" }, "implementationComplexity": "basic" },
+        "DE.CM-01": { "name": "Monitoreo Continuo", "activities": { "basic": "Logs básicos de acceso y errores del sistema", "intermediate": "SIEM básico o herramienta de monitoreo centralizada", "advanced": "SOC interno o externo con monitoreo 24/7" }, "implementationComplexity": "advanced" },
+        "ID.IM-04": { "name": "Plan de Respuesta a Incidentes", "activities": { "basic": "Procedimiento simple de 1 página para incidentes", "intermediate": "Plan detallado con roles y escalamiento", "advanced": "Playbooks específicos por tipo de incidente" }, "implementationComplexity": "intermediate" },
+        "RC.RP-01": { "name": "Plan de Recuperación", "activities": { "basic": "Procedimiento básico de restauración desde backup", "intermediate": "Plan de continuidad del negocio documentado", "advanced": "BCP/DRP con sitio alterno y RPO/RTO definidos" }, "implementationComplexity": "advanced" }
+    },
+    "sectorSpecificRequirements": {
+        "Retail/Comercio": { "mandatorySubcategories": ["PR.DS-01", "PR.AA-05", "DE.CM-01", "ID.AM-02"], "additionalRisks": ["Fraude en POS", "Robo de datos de tarjetas"], "complianceFrameworks": ["PCI-DSS básico", "Ley 19.628"], "functionPriorities": { "GOVERN": 0.7, "IDENTIFY": 0.7, "PROTECT": 0.95, "DETECT": 0.8, "RESPOND": 0.7, "RECOVER": 0.6 } },
+        "Servicios Profesionales": { "mandatorySubcategories": ["PR.DS-01", "PR.AA-05", "GV.OC", "PR.AA-01"], "additionalRisks": ["Pérdida de confidencialidad cliente", "Espionaje corporativo"], "complianceFrameworks": ["Secreto profesional", "Ley 19.628"], "functionPriorities": { "GOVERN": 0.85, "IDENTIFY": 0.75, "PROTECT": 0.8, "DETECT": 0.7, "RESPOND": 0.7, "RECOVER": 0.65 } },
+        "Manufactura/Industria": { "mandatorySubcategories": ["RC.RP-01", "DE.CM-01", "PR.DS-01", "ID.AM-01"], "additionalRisks": ["Parada de líneas de producción", "Sabotaje de sistemas de control"], "complianceFrameworks": ["ISO 27001", "Normas ambientales"], "functionPriorities": { "GOVERN": 0.8, "IDENTIFY": 0.85, "PROTECT": 0.9, "DETECT": 0.85, "RESPOND": 0.8, "RECOVER": 0.85 } },
+        "Tecnología/Software": { "mandatorySubcategories": ["PR.DS-01", "ID.AM-02", "PR.AA-01", "DE.CM-01", "GV.RM"], "additionalRisks": ["Robo de código fuente", "Ataques a infraestructura cloud"], "complianceFrameworks": ["ISO 27001", "Propiedad intelectual"], "functionPriorities": { "GOVERN": 0.9, "IDENTIFY": 0.95, "PROTECT": 0.9, "DETECT": 0.85, "RESPOND": 0.75, "RECOVER": 0.7 } }
+    },
+    "siiClassification": {
+        "0-2400": { "type": "microempresa", "baseMultiplier": 0.8, "prioritizeFunctions": ["PROTECT", "RECOVER"], "description": "Microempresa - Enfoque en protección básica" },
+        "2401-25000": { "type": "pequeña", "baseMultiplier": 1.0, "prioritizeFunctions": ["GOVERN", "PROTECT", "IDENTIFY"], "description": "Pequeña empresa - Perfil balanceado" },
+        "25001-100000": { "type": "mediana", "baseMultiplier": 1.2, "prioritizeFunctions": ["GOVERN", "IDENTIFY", "DETECT"], "description": "Mediana empresa - Perfil avanzado con governance" }
+    },
+    "subcategoryMatrix": {
+        "GV.OC": { "base": 0.5, "mandatoryBySector": { "Retail/Comercio": 0, "Servicios Profesionales": 0.4, "Manufactura/Industria": 0, "Tecnología/Software": 0 }, "priorityAlignments": { "Cumplimiento regulatorio": 0.3 } },
+        "GV.RM": { "base": 0.5, "mandatoryBySector": { "Retail/Comercio": 0, "Servicios Profesionales": 0, "Manufactura/Industria": 0, "Tecnología/Software": 0.4 }, "priorityAlignments": { "Continuidad del negocio": 0.3 } },
+        "ID.AM-01": { "base": 0.5, "mandatoryBySector": { "Retail/Comercio": 0, "Servicios Profesionales": 0, "Manufactura/Industria": 0.4, "Tecnología/Software": 0 }, "priorityAlignments": {} },
+        "ID.AM-02": { "base": 0.5, "mandatoryBySector": { "Retail/Comercio": 0.4, "Servicios Profesionales": 0, "Manufactura/Industria": 0, "Tecnología/Software": 0.4 }, "priorityAlignments": {} },
+        "PR.AA-01": { "base": 0.5, "mandatoryBySector": { "Retail/Comercio": 0, "Servicios Profesionales": 0.4, "Manufactura/Industria": 0, "Tecnología/Software": 0.4 }, "priorityAlignments": { "Protección de datos de clientes": 0.3, "Protección de propiedad intelectual": 0.3 } },
+        "PR.AA-05": { "base": 0.5, "mandatoryBySector": { "Retail/Comercio": 0.4, "Servicios Profesionales": 0.4, "Manufactura/Industria": 0, "Tecnología/Software": 0 }, "priorityAlignments": { "Protección de datos de clientes": 0.3, "Protección de propiedad intelectual": 0.3 } },
+        "PR.DS-01": { "base": 0.5, "mandatoryBySector": { "Retail/Comercio": 0.4, "Servicios Profesionales": 0.4, "Manufactura/Industria": 0.4, "Tecnología/Software": 0.4 }, "priorityAlignments": { "Protección de datos de clientes": 0.3, "Cumplimiento regulatorio": 0.3, "Protección de propiedad intelectual": 0.3, "Seguridad de pagos": 0.3 } },
+        "DE.CM-01": { "base": 0.5, "mandatoryBySector": { "Retail/Comercio": 0.4, "Servicios Profesionales": 0, "Manufactura/Industria": 0.4, "Tecnología/Software": 0.4 }, "priorityAlignments": { "Continuidad del negocio": 0.3, "Seguridad de pagos": 0.3 } },
+        "ID.IM-04": { "base": 0.5, "mandatoryBySector": { "Retail/Comercio": 0, "Servicios Profesionales": 0, "Manufactura/Industria": 0, "Tecnología/Software": 0 }, "priorityAlignments": { "Continuidad del negocio": 0.3 } },
+        "RC.RP-01": { "base": 0.5, "mandatoryBySector": { "Retail/Comercio": 0, "Servicios Profesionales": 0, "Manufactura/Industria": 0.4, "Tecnología/Software": 0 }, "priorityAlignments": { "Continuidad del negocio": 0.3 } }
+    },
+    "dependencyMatrix": {
+        "GV.RM": { "dependencies": ["GV.OC"], "description": "Primero definir contexto organizacional" },
+        "ID.AM-02": { "dependencies": ["ID.AM-01"], "description": "Software depende de inventario físico" },
+        "PR.AA-01": { "dependencies": ["ID.AM-01"], "description": "Gestión de identidades requiere inventario de activos" },
+        "PR.AA-05": { "dependencies": ["PR.AA-01"], "description": "Menor privilegio requiere gestión de identidades" },
+        "PR.DS-01": { "dependencies": ["ID.AM-01", "PR.AA-01"], "description": "Cifrado requiere inventario y control de acceso" },
+        "DE.CM-01": { "dependencies": ["PR.AA-01", "ID.AM-01"], "description": "Monitoreo requiere identidades y activos definidos" },
+        "RC.RP-01": { "dependencies": ["ID.IM-04", "GV.RM"], "description": "Recuperación requiere plan de respuesta y gestión riesgos" }
+    },
+    "riskReductionMatrix": {
+        "GV.OC": { "baseReduction": 15, "sectorCritical": { "Servicios Profesionales": 5 }, "impactDescription": "Fundamento para todas las decisiones de seguridad" },
+        "GV.RM": { "baseReduction": 20, "sectorCritical": { "Tecnología/Software": 10 }, "impactDescription": "Gestión sistemática de riesgos empresariales" },
+        "ID.AM-01": { "baseReduction": 25, "sectorCritical": { "Manufactura/Industria": 10 }, "impactDescription": "Visibilidad completa de activos físicos críticos" },
+        "ID.AM-02": { "baseReduction": 20, "sectorCritical": { "Tecnología/Software": 15 }, "impactDescription": "Control de vulnerabilidades de software" },
+        "PR.AA-01": { "baseReduction": 30, "sectorCritical": { "Retail/Comercio": 15, "Servicios Profesionales": 15, "Tecnología/Software": 15 }, "impactDescription": "Prevención de accesos no autorizados" },
+        "PR.AA-05": { "baseReduction": 25, "sectorCritical": { "Retail/Comercio": 10, "Servicios Profesionales": 10 }, "impactDescription": "Limitación de exposición por privilegios excesivos" },
+        "PR.DS-01": { "baseReduction": 35, "sectorCritical": { "Retail/Comercio": 15, "Servicios Profesionales": 15, "Manufactura/Industria": 15, "Tecnología/Software": 15 }, "impactDescription": "Protección ante robo/pérdida de datos" },
+        "DE.CM-01": { "baseReduction": 40, "sectorCritical": { "Retail/Comercio": 20, "Tecnología/Software": 20 }, "impactDescription": "Detección temprana de amenazas" },
+        "ID.IM-04": { "baseReduction": 30, "sectorCritical": { "Manufactura/Industria": 15 }, "impactDescription": "Respuesta rápida y coordinada" },
+        "RC.RP-01": { "baseReduction": 45, "sectorCritical": { "Manufactura/Industria": 20 }, "impactDescription": "Continuidad del negocio asegurada" }
+    },
+    "complianceMatrix": {
+        "GV.OC": { "ley19628": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "personalData" }, "pciDSS": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "retailPayments" }, "iso27001": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "always" }, "gdpr": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "euOperations" }, "sectoral": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "servicios", "description": "Secreto profesional" } },
+        "GV.RM": { "ley19628": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "personalData" }, "pciDSS": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "retailPayments" }, "iso27001": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "always" }, "gdpr": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "euOperations" }, "sectoral": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "tecnologia", "description": "Propiedad intelectual" } },
+        "ID.AM-01": { "ley19628": { "level": "CONTRIBUTIVO", "bonus": 0.05, "condition": "personalData" }, "pciDSS": { "level": "OBLIGATORIO", "bonus": 0.2, "condition": "retailPayments" }, "iso27001": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "always" }, "gdpr": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "euOperations" }, "sectoral": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "manufactura", "description": "Normas ambientales" } },
+        "ID.AM-02": { "ley19628": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "personalData" }, "pciDSS": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "retailPayments" }, "iso27001": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "always" }, "gdpr": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "euOperations" }, "sectoral": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "tecnologia", "description": "Certificaciones ISO" } },
+        "PR.AA-01": { "ley19628": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "personalData" }, "pciDSS": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "retailPayments" }, "iso27001": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "always" }, "gdpr": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "euOperations" }, "sectoral": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "servicios", "description": "Confidencialidad cliente" } },
+        "PR.AA-05": { "ley19628": { "level": "OBLIGATORIO", "bonus": 0.2, "condition": "personalData" }, "pciDSS": { "level": "OBLIGATORIO", "bonus": 0.2, "condition": "retailPayments" }, "iso27001": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "always" }, "gdpr": { "level": "OBLIGATORIO", "bonus": 0.2, "condition": "euOperations" }, "sectoral": { "level": "OBLIGATORIO", "bonus": 0.2, "condition": "retail", "description": "Segregación de funciones" } },
+        "PR.DS-01": { "ley19628": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "personalData" }, "pciDSS": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "retailPayments" }, "iso27001": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "always" }, "gdpr": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "euOperations" }, "sectoral": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "always", "description": "Ley 19.628 Art.12" } },
+        "DE.CM-01": { "ley19628": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "personalData" }, "pciDSS": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "retailPayments" }, "iso27001": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "always" }, "gdpr": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "euOperations" }, "sectoral": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "manufactura", "description": "Trazabilidad procesos" } },
+        "ID.IM-04": { "ley19628": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "personalData" }, "pciDSS": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "retailPayments" }, "iso27001": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "always" }, "gdpr": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "euOperations" }, "sectoral": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "retail", "description": "Continuidad ventas" } },
+        "RC.RP-01": { "ley19628": { "level": "CONTRIBUTIVO", "bonus": 0.05, "condition": "personalData" }, "pciDSS": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "retailPayments" }, "iso27001": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "always" }, "gdpr": { "level": "RECOMENDADO", "bonus": 0.1, "condition": "euOperations" }, "sectoral": { "level": "OBLIGATORIO", "bonus": 0.3, "condition": "manufactura", "description": "RTO operaciones" } }
+    },
+    "functionMetrics": {
+        "GOVERN": ["% de políticas documentadas", "Frecuencia de revisiones de riesgo"],
+        "IDENTIFY": ["% de activos inventariados", "Tiempo de identificación de vulnerabilidades"],
+        "PROTECT": ["% de datos cifrados", "% de usuarios con MFA"],
+        "DETECT": ["Tiempo promedio de detección", "% de logs monitoreados"],
+        "RESPOND": ["Tiempo de respuesta a incidentes", "% de personal capacitado"],
+        "RECOVER": ["RTO promedio", "% de sistemas con backup"]
+    },
+    "implementationMap": { "1": "No implementado", "2": "Implementación básica (20-40%)", "3": "Implementación intermedia (40-70%)", "4": "Implementación avanzada (70-90%)", "5": "Completamente implementado (90%+)" },
+    "capacityMultipliers": { "ninguna": 1.5, "basica": 1.2, "intermedia": 1.0, "avanzada": 0.8 },
+    "staffMultipliers": { "ninguna": 2.0, "parcial": 1.4, "media_jornada": 1.0, "tiempo_completo": 0.7 },
+    "functionLimits": { "GOVERN": {"min": 1, "max": 5}, "IDENTIFY": {"min": 1, "max": 5}, "PROTECT": {"min": 1, "max": 5}, "DETECT": {"min": 1, "max": 4}, "RESPOND": {"min": 1, "max": 4}, "RECOVER": {"min": 1, "max": 4} },
+    "nistFunctions": ["GOVERN", "IDENTIFY", "PROTECT", "DETECT", "RESPOND", "RECOVER"],
+    "functionNames": { "GOVERN": "Gobernanza", "IDENTIFY": "Identificación y Evaluación", "PROTECT": "Protección y Control", "DETECT": "Detección y Monitoreo", "RESPOND": "Respuesta a Incidentes", "RECOVER": "Recuperación" }
+}

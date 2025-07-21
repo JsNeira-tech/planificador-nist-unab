@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador NIST CSF 2.0 para PYMEs Chilenas v.2.8 - OPTIMIZADO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#0ea5e9',
+                        accent: '#10b981',
+                        dark: '#0f172a',
+                        light: '#f8fafc'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .progress-bar { height: 8px; transition: width 0.4s ease; }
+        .step-card { transition: all 0.3s ease; display: none; }
+        .step-card.active { display: block; }
+        .kpi-card { border-left: 4px solid #0ea5e9; }
+        .nist-function { transition: all 0.3s ease; }
+        .nist-function:hover { transform: scale(1.03); }
+        .profile-bar { height: 20px; border-radius: 4px; }
+        .subcategory-item { border-left: 3px solid #10b981; }
+        .checkbox-container { display: flex; flex-wrap: wrap; gap: 12px; }
+        .checkbox-item { background-color: #f3f4f6; padding: 12px; border-radius: 8px; flex: 1 0 calc(50% - 12px); min-width: 200px; }
+        .checkbox-item label { display: flex; align-items: center; cursor: pointer; }
+        .checkbox-item input { margin-right: 8px; }
+        .priority-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 8px; }
+        .priority-high { background-color: #fee2e2; color: #b91c1c; }
+        .priority-medium { background-color: #fffbeb; color: #b45309; }
+        .priority-low { background-color: #ecfdf5; color: #065f46; }
+        .sector-tag { display: inline-block; padding: 4px 10px; border-radius: 16px; font-size: 0.75rem; font-weight: 600; background-color: #dbeafe; color: #1d4ed8; }
+        .btn { padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-primary { background-color: #1e3a8a; color: white; }
+        .btn-primary:hover { background-color: #1e40af; }
+        .btn-secondary { background-color: #e5e7eb; color: #4b5563; }
+        .btn-secondary:hover { background-color: #d1d5db; }
+        .btn-disabled { background-color: #9ca3af; color: #6b7280; cursor: not-allowed; }
+        .nist-profile { display: flex; flex-direction: column; gap: 12px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .profile-row { display: flex; align-items: center; }
+        .profile-label { width: 120px; font-weight: 600; color: #1f2937; }
+        .profile-levels { flex: 1; display: flex; gap: 4px; }
+        .level-dot { width: 24px; height: 24px; border-radius: 50%; background-color: #e5e7eb; }
+        .level-dot.active { background-color: #10b981; }
+        .level-dot.target { border: 2px solid #0ea5e9; }
+        .level-dot.gap { background-color: #f59e0b; }
+        .security-concern { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; transition: all 0.2s; }
+        .security-concern:hover { background-color: #f3f4f6; transform: translateY(-2px); }
+        .security-concern.selected { border-color: #3b82f6; background-color: #eff6ff; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1); }
+        .phase-card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .phase-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .priority-critical { background-color: #fee2e2; color: #b91c1c; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .priority-alto { background-color: #fff7ed; color: #ea580c; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .priority-medio { background-color: #fefce8; color: #ca8a04; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .loading { display: flex; justify-content: center; align-items: center; padding: 40px; }
+        .config-error { background-color: #fee2e2; border: 1px solid #fecaca; color: #b91c1c; padding: 16px; border-radius: 8px; margin: 20px; }
+        .compliance-badge { display: inline-block; padding: 2px 6px; border-radius: 8px; font-size: 0.6rem; font-weight: 700; margin-left: 4px; text-transform: uppercase; }
+        .compliance-obligatorio { background-color: #fee2e2; color: #b91c1c; }
+        .compliance-recomendado { background-color: #fff3e0; color: #ef6c00; }
+        .compliance-contributivo { background-color: #f3e5f5; color: #7b1fa2; }
+        .profile-chart-row { margin-bottom: 1rem; }
+        .chart-legend { display: flex; gap: 20px; margin-top: 12px; justify-content: flex-end; font-size: 0.75rem; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-color-box { width: 14px; height: 14px; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-primary text-white py-6 shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <i class="fas fa-shield-alt text-3xl mr-3 text-accent"></i>
+                    <h1 class="text-2xl md:text-3xl font-bold">Planificador NIST CSF 2.0</h1>
+                </div>
+                <div class="text-center">
+                    <p class="text-secondary font-semibold">Herramienta para PYMEs Chilenas</p>
+                    <p class="text-sm opacity-80">v.2.8 - Evaluación 100% Objetiva</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="loading-screen" class="loading">
+            <div class="text-center">
+                <i class="fas fa-spinner fa-spin text-4xl text-primary mb-4"></i>
+                <p class="text-lg font-semibold text-gray-700">Cargando configuraciones NIST CSF 2.0...</p>
+                <p class="text-sm text-gray-500 mt-2">Inicializando matrices completas y parámetros de cumplimiento</p>
+            </div>
+        </div>
+        <div id="error-screen" class="config-error" style="display: none;">
+            <h3 class="font-bold mb-2">❌ Error de Configuración</h3>
+            <p>No se pudieron cargar los archivos de configuración necesarios.</p>
+            <p class="text-sm mt-2">Verifique que los archivos de datos estén disponibles y sean correctos.</p>
+        </div>
+        <div id="main-app" style="display: none;">
+            <div class="mb-8 bg-white rounded-lg shadow p-4">
+                <div class="flex justify-between mb-2">
+                    <span class="text-sm font-medium text-primary">Paso <span id="current-step">1</span> de 5</span>
+                    <span class="text-sm font-medium text-primary"><span id="progress-percent">20</span>% completado</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="progress-bar bg-accent rounded-full h-2.5" style="width: 20%"></div>
+                </div>
+                <div class="flex justify-between mt-4" id="step-indicators"></div>
+            </div>
+            <div id="step1" class="step-card active bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="flex items-center mb-6"><i class="fas fa-building text-2xl text-primary mr-3"></i><h2 class="text-xl font-bold text-dark">1. Información General</h2></div>
+                <div class="flex items-center justify-end mb-6 bg-gray-50 p-3 rounded-lg"><label for="toggle-legends-checkbox" class="mr-3 text-sm font-medium text-gray-700">Mostrar leyendas de ayuda</label><input type="checkbox" id="toggle-legends-checkbox" class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" checked></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label class="block text-gray-700 font-medium mb-2" for="companyName">Nombre de la Empresa</label><input type="text" id="companyName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary" placeholder="Ej: Comercial San Pedro Ltda."></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="sector">Sector</label><select id="sector" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione un sector</option></select></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="employees">Número de Empleados</label><select id="employees" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione cantidad</option><option value="1-5">1-5 empleados</option><option value="6-10">6-10 empleados</option><option value="11-25">11-25 empleados</option><option value="26-50">26-50 empleados</option><option value="51-100">51-100 empleados</option></select></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="revenue">Facturación Anual (UF) - SII Chile</label><select id="revenue" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione rango</option><option value="0-2400">Hasta 2.400 UF (microempresa)</option><option value="2401-25000">2.401 - 25.000 UF (pequeña)</option><option value="25001-100000">25.001 - 100.000 UF (mediana)</option></select><p class="text-xs text-gray-500 mt-1 helper-text">Clasificación oficial SII para determinar perfil objetivo</p></div>
+                </div>
+                <div class="mt-8 flex justify-between"><button class="btn btn-secondary" onclick="cancelProcess()"><i class="fas fa-times mr-2"></i> Cancelar</button><button class="btn btn-primary" onclick="nextStep(2)" id="btn-step1">Siguiente <i class="fas fa-arrow-right ml-2"></i></button></div>
+            </div>
+            <div id="step2" class="step-card bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="flex items-center mb-6"><i class="fas fa-lock text-2xl text-primary mr-3"></i><h2 class="text-xl font-bold text-dark">2. Capacidades Técnicas Implementadas</h2><span class="ml-2 text-sm bg-green-100 text-green-800 px-2 py-1 rounded">✅ Solo capacidades reales</span></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label class="block text-gray-700 font-medium mb-2" for="responsible">¿Quién es el responsable de la ciberseguridad?</label><select id="responsible" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione opción</option><option value="gerente_general">Gerente General</option><option value="ti_interno">Encargado TI interno</option><option value="proveedor_externo">Proveedor TI externo</option><option value="multiple_personas">Varias personas sin claridad</option><option value="nadie_especifico">No hay alguien específico</option></select><p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: GOVERN (+1 si designado)</p></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="riskIntegration">¿Cómo se integra el riesgo de ciberseguridad en las decisiones empresariales?</label><select id="riskIntegration" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione opción</option><option value="formal_process">Proceso formal en reuniones directorio/gerencia</option><option value="informal_consideration">Se considera informalmente en decisiones importantes</option><option value="ad_hoc">Solo cuando surgen problemas</option><option value="not_considered">No se considera en decisiones empresariales</option></select><p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: GOVERN (+1 si formal)</p></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="protectionSystems">¿Qué sistemas de protección tiene implementados?</label><select id="protectionSystems" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione opción</option><option value="ninguno">No, ninguno</option><option value="antivirus">Todos los equipos tienen antivirus instalado</option><option value="antivirus_firewall">Antivirus + cortafuegos implementado</option><option value="completo">Antivirus + cortafuegos + cifrado de discos</option></select><p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: PROTECT (+1/+2/+3) y DETECT (+1/+2)</p></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="passwordPolicy">¿Tiene política de gestión de contraseñas?</label><select id="passwordPolicy" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione opción</option><option value="ninguna">No</option><option value="usuario_escoge">Sí, el usuario escoge su contraseña</option><option value="servidor_obliga">El servidor obliga a cambiar contraseña periódicamente</option><option value="politica_formal">Política bien definida y de obligado cumplimiento</option></select><p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: PROTECT (+1/+2)</p></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="backupFrequency">¿Con qué frecuencia realiza copias de seguridad?</label><select id="backupFrequency" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione opción</option><option value="nunca">Nunca / No lo sé</option><option value="cuando_me_acuerdo">Cuando me acuerdo</option><option value="mensual">Una vez al mes</option><option value="semanal">Cada semana</option><option value="diario">Todos los días</option></select><p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: RECOVER (+1/+2/+3)</p></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="employeeTraining">¿Ha formado a sus empleados en ciberseguridad?</label><select id="employeeTraining" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione opción</option><option value="no_necesario">Considero que no es necesario</option><option value="informacion_leer">Les dimos información para leer</option><option value="charla">Recibieron una charla</option><option value="curso_dias">Fueron a un curso de varios días</option><option value="requisito_contratacion">Al contratar requerimos formación previa</option></select><p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: GOVERN (+1/+2) y DETECT (+1)</p></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="assetInventory">¿Tiene inventario documentado de sus activos tecnológicos?</label><select id="assetInventory" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione opción</option><option value="no_inventario">No tenemos inventario</option><option value="lista_basica">Lista básica en papel/Excel</option><option value="inventario_digital">Inventario digital actualizado</option><option value="inventario_automatizado">Inventario automatizado con propietarios</option></select><p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: IDENTIFY (+1/+2/+3) y DETECT (+1/+2)</p></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="incidentPlan">¿Tiene plan documentado para responder a incidentes de seguridad?</label><select id="incidentPlan" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione opción</option><option value="no_plan">No tenemos plan</option><option value="sabemos_llamar">Sabemos a quién llamar</option><option value="plan_basico">Plan básico documentado</option><option value="plan_detallado">Plan detallado con roles y procedimientos</option></select><p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: RESPOND (+1/+2/+3)</p></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="criticalDecisions">¿Quién puede tomar decisiones críticas de TI fuera de horario?</label><select id="criticalDecisions" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione opción</option><option value="nadie">Nadie / No sabemos</option><option value="solo_gerente">Solo el gerente</option><option value="gerente_ti">Responsable TI + gerente</option><option value="equipo_definido">Equipo definido con contactos</option></select><p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: RESPOND (+1/+2/+3)</p></div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">¿Qué tipo de datos maneja su empresa?</label>
+                        <div class="checkbox-container">
+                            <div class="checkbox-item"><label><input type="checkbox" name="dataTypes" value="Datos personales de clientes"> Datos personales de clientes</label></div>
+                            <div class="checkbox-item"><label><input type="checkbox" name="dataTypes" value="Información financiera"> Información financiera</label></div>
+                            <div class="checkbox-item"><label><input type="checkbox" name="dataTypes" value="Datos de producción"> Datos de producción</label></div>
+                            <div class="checkbox-item"><label><input type="checkbox" name="dataTypes" value="Propiedad intelectual"> Propiedad intelectual</label></div>
+                            <div class="checkbox-item"><label><input type="checkbox" name="dataTypes" value="Información comercial confidencial"> Información comercial confidencial</label></div>
+                        </div>
+                        <p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: Cumplimiento regulatorio y subcategorías</p>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-between"><button class="btn btn-secondary" onclick="prevStep(1)"><i class="fas fa-arrow-left mr-2"></i> Anterior</button><button class="btn btn-primary" onclick="nextStep(3)" id="btn-step2">Siguiente <i class="fas fa-arrow-right ml-2"></i></button></div>
+            </div>
+            <div id="step3" class="step-card bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="flex items-center mb-6"><i class="fas fa-chart-bar text-2xl text-primary mr-3"></i><h2 class="text-xl font-bold text-dark">3. Evaluación Actual NIST</h2></div>
+                <div class="mb-8">
+                    <label class="block text-gray-700 font-medium mb-2">Principales preocupaciones de seguridad (seleccione máximo <span id="max-concerns">3</span>)</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="security-concerns-container"></div>
+                    <div class="mt-2 text-sm text-gray-500">* Seleccione hasta <span id="max-concerns-text">3</span> preocupaciones principales</div>
+                    <p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: Perfil objetivo (bonificación urgencia) y subcategorías</p>
+                </div>
+                <div class="bg-gray-50 p-5 rounded-xl mb-8">
+                    <div class="flex justify-between items-center mb-4"><h3 class="text-lg font-semibold text-primary flex items-center"><i class="fas fa-chart-line mr-2"></i> Perfil NIST Actual</h3><div class="text-sm text-gray-600">Calculado automáticamente con capacidades reales</div></div>
+                    <div id="current-profile" class="nist-profile"><div class="text-center text-gray-500 py-4"><i class="fas fa-info-circle text-2xl mb-2"></i><p>Complete la información anterior para ver su perfil NIST actual</p></div></div>
+                </div>
+                <div class="mt-8 flex justify-between"><button class="btn btn-secondary" onclick="prevStep(2)"><i class="fas fa-arrow-left mr-2"></i> Anterior</button><button class="btn btn-primary" onclick="nextStep(4)" id="btn-step3">Siguiente <i class="fas fa-arrow-right ml-2"></i></button></div>
+            </div>
+            <div id="step4" class="step-card bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="flex items-center mb-6"><i class="fas fa-tools text-2xl text-primary mr-3"></i><h2 class="text-xl font-bold text-dark">4. Recursos y Capacidades</h2></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label class="block text-gray-700 font-medium mb-2" for="timeline">Tiempo disponible para implementación</label><select id="timeline" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione opción</option><option value="3">3 meses (urgente)</option><option value="6">6 meses (normal)</option><option value="12">12 meses (gradual)</option><option value="18">18+ meses (largo plazo)</option></select><p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: Perfil objetivo (bonificación urgencia)</p></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="techCapacity">Capacidad técnica interna</label><select id="techCapacity" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione opción</option><option value="ninguna">Sin conocimientos técnicos específicos</option><option value="basica">Conocimientos básicos de IT</option><option value="intermedia">Personal IT dedicado</option><option value="avanzada">Equipo IT experimentado en seguridad</option></select><p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: DETECT (±1), penalización funciones complejas, tiempo de fases</p></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="staffAvailability">Disponibilidad de personal</label><select id="staffAvailability" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione opción</option><option value="ninguna">No tenemos tiempo disponible</option><option value="parcial">Algunas horas por semana</option><option value="media_jornada">Media jornada dedicada</option><option value="tiempo_completo">Persona dedicada tiempo completo</option></select><p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: Tiempos de fases (multiplicador 0.7-2.0x)</p></div>
+                    <div><label class="block text-gray-700 font-medium mb-2" for="outsourcing">Disposición para outsourcing/consultoría externa</label><select id="outsourcing" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"><option value="">Seleccione opción</option><option value="high">Alta - Preferimos trabajar con consultores externos</option><option value="medium">Media - Combinación de interno y externo</option><option value="low">Baja - Preferimos desarrollar capacidades internas</option><option value="reluctant">Reacio - Solo recursos internos</option></select><p class="text-xs text-blue-600 mt-1 helper-text">💡 Influye en: Tiempos de fases (x0.8 si ≠reluctant)</p></div>
+                </div>
+                <div class="bg-gray-50 p-5 rounded-xl mt-6">
+                    <div class="flex justify-between items-center mb-4"><h3 class="text-lg font-semibold text-primary flex items-center"><i class="fas fa-bullseye mr-2"></i> Perfil NIST Objetivo</h3><div class="text-sm text-gray-600">Basado en recursos, sector y clasificación SII</div></div>
+                    <div id="target-profile" class="nist-profile"><div class="text-center text-gray-500 py-4"><i class="fas fa-info-circle text-2xl mb-2"></i><p>Complete la información anterior para ver su perfil objetivo</p></div></div>
+                </div>
+                <div class="mt-8 flex justify-between"><button class="btn btn-secondary" onclick="prevStep(3)"><i class="fas fa-arrow-left mr-2"></i> Anterior</button><button class="btn btn-primary" onclick="nextStep(5)" id="btn-step4">Generar Plan <i class="fas fa-file-alt ml-2"></i></button></div>
+            </div>
+            <div id="step5" class="step-card bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="flex items-center mb-6"><i class="fas fa-clipboard-check text-2xl text-primary mr-3"></i><h2 class="text-xl font-bold text-dark">5. Plan de Ciberseguridad Personalizado</h2></div>
+                <div id="plan-content"><div class="text-center text-gray-500 py-8"><i class="fas fa-spinner fa-spin text-3xl mb-4"></i><p>Generando su plan personalizado con matriz de cumplimiento...</p></div></div>
+                <div class="mt-8 flex justify-between"><button class="btn btn-secondary" onclick="prevStep(4)"><i class="fas fa-arrow-left mr-2"></i> Anterior</button><div class="space-x-3"><button class="btn" style="background-color: #059669; color: white;" onclick="window.print()"><i class="fas fa-print mr-2"></i> Imprimir</button><button class="btn" style="background-color: #7c3aed; color: white;" onclick="exportPlan()"><i class="fas fa-download mr-2"></i> Exportar</button></div></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024-2025 Planificador NIST CSF 2.0 para PYMEs Chilenas. Todos los derechos reservados.</p>
+            <p class="text-sm mt-2 opacity-75">Versión 2.8 - Evaluación 100% Objetiva</p>
+        </div>
+    </footer>
+
+    <script src="js/motor-evaluador.js"></script>
+    <script src="js/ui-manager.js"></script>
+
+</body>
+</html>
